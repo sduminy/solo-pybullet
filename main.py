@@ -16,7 +16,7 @@ from pinocchio.robot_wrapper import RobotWrapper # Robot Wrapper to load an URDF
 # Other modules
 import time # Time module to sleep()
 from initialization_simulation import * # Functions to initialize the simulation and retrieve joints positions/velocities
-from controller import * # Controller functions
+from walking_controller import * # Controller functions
 
 ####################
 ## INITIALIZATION ##
@@ -41,7 +41,7 @@ for i in range(10000): # run the simulation during dt * i_max seconds (simulati
     q, qdot = getPosVelJoints(robotId, revoluteJointIndices)
 
     # Call controller to get torques for all joints
-    jointTorques = c(q, qdot, dt)
+    jointTorques = c_walking_IK(q, qdot, dt, solo, dt*i)
 
     # Set control torques for all joints in PyBullet
     p.setJointMotorControlArray(robotId, revoluteJointIndices, controlMode=p.TORQUE_CONTROL, forces=jointTorques)

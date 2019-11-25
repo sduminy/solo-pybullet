@@ -30,7 +30,7 @@ def readParamsFromSrdf(robot, SRDF_PATH, verbose):
     # pinocchio.loadRotorParameters(rmodel, SRDF_PATH, verbose)
     rmodel.armature = np.multiply(rmodel.rotorInertia.flat, np.square(rmodel.rotorGearRatio.flat))
     pinocchio.loadReferenceConfigurations(rmodel, SRDF_PATH, verbose)
-    robot.q0.flat[:] = rmodel.referenceConfigurations["half_sitting"].copy()
+    robot.q0.flat[:] = rmodel.referenceConfigurations["straight_standing"].copy()
     return
 
 
