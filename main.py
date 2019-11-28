@@ -63,18 +63,12 @@ T = 0.4 			# period of the foot trajectory
 DT = int(T/dt)		# number of iteration for one period
 Q = Q_list[4*DT:5*DT] # Q is the list of the configurations for one trajectory cycle (the 2nd one to avoid the singularities of the 1st one)
 
-print('{') 
+print('q[400][8] = ', end='')
+print('{', end='') 
 for i in range(DT-1): 
 	print ('{',"{},{},{},{},{},{},{},{}".format(Q[i][0,0],Q[i][1,0],Q[i][2,0],Q[i][3,0],Q[i][4,0],Q[i][5,0],Q[i][6,0],Q[i][7,0]),'},') 
-print ('{',"{},{},{},{},{},{},{},{}".format(Q[399][0,0],Q[399][1,0],Q[399][2,0],Q[399][3,0],Q[399][4,0],Q[399][5,0],Q[399][6,0],Q[399][7,0]),'}')
+print ('{',"{},{},{},{},{},{},{},{}".format(Q[399][0,0],Q[399][1,0],Q[399][2,0],Q[399][3,0],Q[399][4,0],Q[399][5,0],Q[399][6,0],Q[399][7,0]),'}', end='')
 print('};') 
 
 # Shut down the PyBullet client
 p.disconnect()
-
-'''
-to print for testing the walk
-q[400][8] = {{0,0,0,0,0,0,0,0},
-             {0,0,0,0,0,0,0,0},
-             {0,0,0,0,0,0,0,0}};
-'''
