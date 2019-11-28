@@ -19,6 +19,7 @@ from PD import *
 # Initialization of the controller's parameters
 q_ref = np.zeros((15,1))
 flag_q_ref = True
+q_list = []	#list to get the configurations for one cycle T
 
 def c_walking_IK(q, qdot, dt, solo, t_simu):
 	
@@ -41,14 +42,14 @@ def c_walking_IK(q, qdot, dt, solo, t_simu):
 		q_ref = solo.q0.copy()
 		flag_q_ref = False
 	
-	#Initialization of the variables
+	# Initialization of the variables
 	K = 100. 	#Convergence gain
-	T = 0.5		#period of the foot trajectory
+	T = 0.4		#period of the foot trajectory
 	xF0 = 0.19	#initial position of the front feet
 	xH0 = -0.19	#initial position of the hind feet
 	z0 = 0.0	#initial altitude of each foot
-	dx = 0.03 	#displacement amplitude by x
-	dz = 0.06	#displacement amplitude by z
+	dx = 0.02 	#displacement amplitude by x
+	dz = 0.05	#displacement amplitude by z
 	
 	# Get the frame index of each foot
 	ID_FL = solo.model.getFrameId("FL_FOOT")
@@ -131,13 +132,15 @@ def c_walking_IK(q, qdot, dt, solo, t_simu):
 	
 	# DONT FORGET TO RUN GEPETTO-GUI BEFORE RUNNING THIS PROGRAMM #
 	solo.display(q) # display the robot in the viewer Gepetto-GUI given its configuration q
-		
+	
+	q_list.append(qa_ref)
+			
 	# End of the control code
 	###############################################
 	
 	# Parameters for the PD controller
-	Kp = 8.
-	Kd = 0.2
+	Kp = 10.
+	Kd = 0.3
 	torque_sat = 3 # torque saturation in N.m
 	torques_ref = np.zeros((8,1)) # feedforward torques
 
@@ -145,4 +148,5 @@ def c_walking_IK(q, qdot, dt, solo, t_simu):
 	torques = PD(qa_ref, qa_dot_ref, qa, qa_dot, dt, Kp, Kd, torque_sat, torques_ref)
    
 	# torques must be a numpy array of shape (8, 1) containing the torques applied to the 8 motors
-	return torques
+	
+	return torques, q_list

@@ -9,7 +9,7 @@ from pinocchio.robot_wrapper import RobotWrapper
 
 
 def getModelPath(subpath, printmsg=False):
-    base = '../../../share/example-robot-data'
+    base = '../../../share/example-robot-data/robots'
     for p in sys.path:
         path = join(p, base.strip('/'))
         if exists(join(path, subpath.strip('/'))):
