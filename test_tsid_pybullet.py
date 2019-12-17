@@ -44,6 +44,8 @@ dt = 0.001				# controller time step
 
 t = 0.0  				# time
 
+Emergency_Stop = False	# emergency stop initialization
+
 # Set the simulation in real time
 realTimeSimulation = True
 
@@ -216,7 +218,7 @@ p.setTimeStep(dt)
 ## Function called from the main loop which computes the inverse dynamic problem and returns the torques
 def callback_torques():
 	
-	global sol, t	# variables needed/computed during the simulation
+	global sol, t, Emergency_Stop	# variables needed/computed during the simulation
 	
 	## Data collection from PyBullet
 	
@@ -252,7 +254,7 @@ def callback_torques():
 	
 	## Emergency stop initialization
 	
-	Emergency_Stop = (q12[9] < -2.4) or (q12[12] < -2.4) or (q12[15] < 0.8) or (q12[18] < 0.8) or (q12[9] > -0.8) or (q12[12] > -0.8) or (q12[15] > 2.4) or (q12[18] > 2.4)
+	Emergency_Stop = Emergency_Stop or (q12[9] < -2.4) or (q12[12] < -2.4) or (q12[15] < 0.8) or (q12[18] < 0.8) or (q12[9] > -0.8) or (q12[12] > -0.8) or (q12[15] > 2.4) or (q12[18] > 2.4)
 	
 				
 	## Torque controller (conversion from 12 to 8 DOF)
@@ -269,7 +271,7 @@ def callback_torques():
 	 		
 	## Saturation to limit the maximal torque
 	
-	t_max = 5.0
+	t_max = 2.5
 	torques = np.maximum(np.minimum(torques, t_max * np.ones((8,1))), -t_max * np.ones((8,1)))
 	
 	return torques
