@@ -31,21 +31,17 @@ robotId, solo, revoluteJointIndices = configure_simulation(dt, enableGUI)
 ## MAIN LOOP ##
 ###############
 	
-for i in range(10000): # run the simulation during dt * i_max seconds (simulation time)
+for i in range(2000): # run the simulation during dt * i_max seconds (simulation time)
    
 	# Time at the start of the loop
 	if realTimeSimulation:
-		t0 = time.clock()
+		t_start = time.time()
 
 	# Get position and velocity of all joints in PyBullet (free flying base + motors)
 	q, qdot = getPosVelJoints(robotId, revoluteJointIndices)
 
 	# Call controller to get torques for all joints
-	jointTorques = c_walking_IK(q, qdot, dt, solo, dt*i)[0]
-
-	# Get the configurations q for one cycle T
-	Q_list = c_walking_IK(q, qdot, dt, solo, dt*i)[1]
-	 
+	jointTorques, Q_list = c_walking_IK_bezier(q, qdot, dt, solo, dt*i)
 	
 	# Set control torques for all joints in PyBullet
 	p.setJointMotorControlArray(robotId, revoluteJointIndices, controlMode=p.TORQUE_CONTROL, forces=jointTorques)
@@ -55,19 +51,31 @@ for i in range(10000): # run the simulation during dt * i_max seconds (simulati
 	
 	# Sleep to get a real time simulation
 	if realTimeSimulation:
-		t_sleep = dt - (time.clock()-t0)
-		if t_sleep > 0:
-			time.sleep(t_sleep)
+		t_spent = time.time() - t_start
+		if t_spent < dt:
+			time.sleep(dt - t_spent)
 
-T = 0.4 			# period of the foot trajectory
+T = 0.3 			# period of the foot trajectory
 DT = int(T/dt)		# number of iteration for one period
-Q = Q_list[4*DT:5*DT] # Q is the list of the configurations for one trajectory cycle (the 2nd one to avoid the singularities of the 1st one)
+Q = Q_list[2*DT:4*DT+1] # Q is the list of the configurations for one trajectory cycle (the 2nd one to avoid the singularities of the 1st one)
+N=2*DT-1
 
-print('q[400][8] = ', end='')
+"""
+q0 = []
+for i in range(len(Q_list)):
+	q0.append(Q_list[i][0,0])
+
+
+import matplotlib.pylab as plt 
+plt.plot(q0)
+plt.show()
+
+"""
+print('q[{}][8] = '.format(N+1), end='')
 print('{', end='') 
-for i in range(DT-1): 
+for i in range(N+1): 
 	print ('{',"{},{},{},{},{},{},{},{}".format(Q[i][0,0],Q[i][1,0],Q[i][2,0],Q[i][3,0],Q[i][4,0],Q[i][5,0],Q[i][6,0],Q[i][7,0]),'},') 
-print ('{',"{},{},{},{},{},{},{},{}".format(Q[399][0,0],Q[399][1,0],Q[399][2,0],Q[399][3,0],Q[399][4,0],Q[399][5,0],Q[399][6,0],Q[399][7,0]),'}', end='')
+print ('{',"{},{},{},{},{},{},{},{}".format(Q[N+1][0,0],Q[N+1][1,0],Q[N+1][2,0],Q[N+1][3,0],Q[N+1][4,0],Q[N+1][5,0],Q[N+1][6,0],Q[N+1][7,0]),'}', end='')
 print('};') 
 
 # Shut down the PyBullet client
