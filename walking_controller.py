@@ -2,12 +2,11 @@
 
 # Pinocchio modules
 import pinocchio as pin # Pinocchio library
-from pinocchio.utils import * # Utilitary functions from Pinocchio
 from pinocchio.robot_wrapper import RobotWrapper # Robot Wrapper to load an URDF in Pinocchio
 
 # Other modules
 import numpy as np
-from PD import *
+from PD import PD
 
 
 ########################
@@ -154,7 +153,7 @@ def c_walking_IK(q, qdot, dt, solo, t_simu):
 
 
 # Method : Inverse Kinematics 
-# Trajectory : sinusoids
+# Trajectory : bezier curve
 
 def c_walking_IK_bezier(q, qdot, dt, solo, t_simu):
 	

@@ -5,7 +5,6 @@ import pybullet_data
 import pinocchio as pin # Pinocchio library
 import numpy as np # Numpy library
 import robots_loader # Functions to load the SOLO quadruped
-from pinocchio.utils import * # Utilitary functions from Pinocchio
 from pinocchio.robot_wrapper import RobotWrapper # Robot Wrapper to load an URDF in Pinocchio
 
 def configure_simulation(dt,enableGUI):
@@ -36,10 +35,8 @@ def configure_simulation(dt,enableGUI):
     robotId = p.loadURDF("solo.urdf",robotStartPos, robotStartOrientation)
 
     # Set time step of the simulation
-    #dt = 0.001
     p.setTimeStep(dt)
-    #realTimeSimulation = True # If True then we will sleep in the main loop to have a frequency of 1/dt
-
+    
     # Disable default motor control for revolute joints
     revoluteJointIndices = [0,1,3,4,6,7,9,10]
     p.setJointMotorControlArray(robotId, 

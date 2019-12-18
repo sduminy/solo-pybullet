@@ -10,13 +10,12 @@ import pybullet_data
 
 # Pinocchio modules
 import pinocchio as pin # Pinocchio library
-from pinocchio.utils import * # Utilitary functions from Pinocchio
 from pinocchio.robot_wrapper import RobotWrapper # Robot Wrapper to load an URDF in Pinocchio
 
 # Other modules
 import time # Time module to sleep()
-from initialization_simulation import * # Functions to initialize the simulation and retrieve joints positions/velocities
-from walking_controller import * # Controller functions
+from initialization_simulation import configure_simulation, getPosVelJoints # Functions to initialize the simulation and retrieve joints positions/velocities
+from walking_controller import c_walking_IK_bezier # Controller functions
 
 ####################
 ## INITIALIZATION ##
@@ -70,13 +69,13 @@ import matplotlib.pylab as plt
 plt.plot(q0)
 plt.show()
 
-"""
+
 print('q[{}][8] = '.format(N+1), end='')
 print('{', end='') 
 for i in range(N+1): 
 	print ('{',"{},{},{},{},{},{},{},{}".format(Q[i][0,0],Q[i][1,0],Q[i][2,0],Q[i][3,0],Q[i][4,0],Q[i][5,0],Q[i][6,0],Q[i][7,0]),'},') 
 print ('{',"{},{},{},{},{},{},{},{}".format(Q[N+1][0,0],Q[N+1][1,0],Q[N+1][2,0],Q[N+1][3,0],Q[N+1][4,0],Q[N+1][5,0],Q[N+1][6,0],Q[N+1][7,0]),'}', end='')
 print('};') 
-
+"""
 # Shut down the PyBullet client
 p.disconnect()
