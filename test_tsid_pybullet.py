@@ -24,7 +24,7 @@ w_lock = 10.0			# weight of the lock task
 
 kp_com = 100.0 			# proportionnal gain of the CoM task
 kp_posture = 10.0  		# proportionnal gain of the posture task
-kd_posture = 10.0		# derivative gain of the posture task
+kd_posture = 20.0		# derivative gain of the posture task
 kp_lock = 0.0			# proportionnal gain of the lock task
 
 # For the contacts
@@ -224,11 +224,10 @@ def callback_torques():
 	
 	jointStates = p.getJointStates(robotId, revoluteJointIndices) # State of all joints
 	baseState   = p.getBasePositionAndOrientation(robotId)
-	baseVel = p.getBaseVelocity(robotId)
 	
 	# Joints configuration and velocity vector
 	q8 = np.vstack((np.array([baseState[0]]).T, np.array([baseState[1]]).T, np.array([[jointStates[i_joint][0] for i_joint in range(len(jointStates))]]).T))
-	v8 = np.vstack((np.array([baseVel[0]]).T, np.array([baseVel[1]]).T, np.array([[jointStates[i_joint][1] for i_joint in range(len(jointStates))]]).T))
+	v8 = np.vstack((np.zeros((6,1)), np.array([[jointStates[i_joint][1] for i_joint in range(len(jointStates))]]).T))
 	
 	# Conversion (from 8 to 12 DOF) and TSID computation 
 	q12 = np.concatenate((q8[:7], np.matrix([0.]), q8[7:9], np.matrix([0.]), q8[9:11], np.matrix([0.]), q8[11:13], np.matrix([0.]), q8[13:15]))
